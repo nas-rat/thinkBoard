@@ -9,8 +9,8 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [daisyui],  // ✅ Only include the plugin here
+  plugins: [daisyui],
   daisyui: {
-    themes: ["forest", "coffee"],  // ✅ Configuration goes outside 'plugins'
+    themes: ["forest", "coffee"],
   },
 }
