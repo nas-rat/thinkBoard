@@ -23,7 +23,7 @@ export async function getNoteById(req, res) {
         const ByIdNote = await prisma.note.findUnique({
             where: { id }
         });
-        if (!updateNote) return res.status(404).json({ message: "Note not found" });
+        if (!getNoteById) return res.status(404).json({ message: "Note not found" });
         res.status(200).json(ByIdNote);
     } catch (error) {
         console.log("error in getNoteById controller", error);
