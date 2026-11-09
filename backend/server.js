@@ -1,38 +1,39 @@
+
 import express from 'express';
 import noteRoutes from './src/Routes/noteRoutes.js';
 import rateLimiter from './src/middleware/rateLimiter.js';
 import cors from 'cors';
-import path from 'path';
 
-
-// Create an Express application
 const app = express();
+
+// Trust the Vercel proxy for client IP identification
+app.set('trust proxy', 1);
 
 // Middleware
 app.use(express.json());
-const PORT = process.env.PORT || 3000;
-const __dirname = path.resolve();
 
-//Routes
+// CORS is only needed for local development.
+// In production, both services use the same domain.
 if (process.env.NODE_ENV !== 'production') {
     app.use(cors({
         origin: 'http://localhost:5173'
     }));
 }
 
+// Rate limiter
 app.use(rateLimiter);
+
+// API routes
 app.use('/api/notes', noteRoutes);
 
-//If it is in production mode
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
-    app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, '../frontend', 'dist', 'index.html'));
+// Local development server
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+
+    app.listen(PORT, () => {
+        console.log(`Server is running on http://localhost:${PORT}`);
     });
 }
 
-
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+// Export Express app for Vercel
+export default app;
